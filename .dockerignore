@@ -1,0 +1,6 @@
+﻿.idea
+.venv
+.git
+logs
+.env.example
+.gitignore

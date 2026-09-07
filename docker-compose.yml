@@ -1,0 +1,14 @@
+﻿services:
+  bot:
+    build: .
+    container_name: dice_bot
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - bot_network
+
+networks:
+  bot_network:
+    driver: bridge
