@@ -1,7 +1,14 @@
-﻿from aiogram import Router
+﻿import logging
+from logging import Logger
+
+from aiogram import Router
 from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent
 from random import randint
 from config import Config
+
+logger: Logger = logging.getLogger(__name__)
+dice_router: Router = Router()
+config: Config = Config()
 
 def _build_card(idx: int, title: str, min_number: int, max_number: int) -> InlineQueryResultArticle:
     number = randint(min_number, max_number)
@@ -20,18 +27,18 @@ def _build_card(idx: int, title: str, min_number: int, max_number: int) -> Inlin
         )
     )
 
-dice_router: Router = Router()
-config: Config = Config()
-
 @dice_router.inline_query()
 async def handle_inline(query: InlineQuery):
-    results: list[InlineQueryResultArticle] = [
-        _build_card(i, title, min_number, max_number)
-        for i, (title, min_number, max_number) in enumerate(config.get_cube_range())
-    ]
+    try:
+        results: list[InlineQueryResultArticle] = [
+            _build_card(i, title, min_number, max_number)
+            for i, (title, min_number, max_number) in enumerate(config.get_cube_range())
+        ]
 
-    await query.answer(
-        results=results,
-        cache_time=1,
-        is_personal=True,
-    )
+        await query.answer(
+            results=results,
+            cache_time=1,
+            is_personal=True,
+        )
+    except Exception as e:
+        logger.error(f"Error when inline query processing: {e}", exc_info=True)

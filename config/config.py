@@ -1,5 +1,5 @@
 ﻿from os import getenv
-from pattern import singleton
+from utils import singleton
 
 @singleton
 class Config:
